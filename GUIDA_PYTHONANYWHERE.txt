@@ -1,0 +1,128 @@
+# GUIDA DEPLOYMENT SU PYTHONANYWHERE
+
+## 1. CARICA I FILE
+
+Nella dashboard di PythonAnywhere:
+
+### A. Apri una Console Bash
+- Vai su "Consoles" → "Bash"
+
+### B. Carica i file (scegli UN metodo):
+
+**Metodo 1 - Upload manuale:**
+- Vai su "Files"
+- Carica questi file nella cartella /home/TUOUSERNAME/:
+  - app.py
+  - database.py
+  - requirements.txt
+  - Crea cartella "templates" e carica tutti i file .html
+
+**Metodo 2 - Da console Bash (più veloce):**
+```bash
+# Crea le cartelle
+mkdir gestione_chiavi
+cd gestione_chiavi
+mkdir templates
+```
+
+Poi usa "Files" per caricare i file nelle rispettive cartelle.
+
+## 2. INSTALLA FLASK
+
+Nella console Bash, esegui:
+```bash
+cd ~/gestione_chiavi
+pip3.10 install --user flask
+```
+
+## 3. CREA WEB APP
+
+1. Vai su "Web" → "Add a new web app"
+2. Scegli "Manual configuration"
+3. Scegli "Python 3.10"
+4. Click "Next"
+
+## 4. CONFIGURA WSGI FILE
+
+1. Nella pagina Web, trova "Code" → "WSGI configuration file"
+2. Click sul link (es. /var/www/tuousername_pythonanywhere_com_wsgi.py)
+3. **CANCELLA TUTTO** il contenuto
+4. **INCOLLA QUESTO** codice:
+
+```python
+import sys
+import os
+
+# Aggiungi la directory del progetto al path
+path = '/home/TUOUSERNAME/gestione_chiavi'
+if path not in sys.path:
+    sys.path.insert(0, path)
+
+# Cambia directory di lavoro
+os.chdir(path)
+
+# Importa l'app Flask
+from app import app as application
+```
+
+⚠️ **IMPORTANTE**: Sostituisci "TUOUSERNAME" con il tuo username PythonAnywhere!
+
+5. Salva il file (CTRL+S)
+
+## 5. CONFIGURA STATIC FILES (Opzionale)
+
+Nella pagina Web, nella sezione "Static files":
+- URL: /static/
+- Directory: /home/TUOUSERNAME/gestione_chiavi/static/
+
+## 6. RICARICA L'APP
+
+1. Torna alla pagina "Web"
+2. Click sul grande pulsante verde "Reload TUOUSERNAME.pythonanywhere.com"
+
+## 7. ACCEDI ALL'APP
+
+Vai a: **https://TUOUSERNAME.pythonanywhere.com**
+
+🎉 L'app è online e accessibile da qualsiasi dispositivo!
+
+---
+
+## 🔧 RISOLUZIONE PROBLEMI
+
+### Errore 500
+- Vai su "Web" → "Error log"
+- Leggi l'errore e verifica i path nel file WSGI
+
+### App non si carica
+- Verifica che tutti i file siano caricati correttamente
+- Controlla che Flask sia installato: `pip3.10 list | grep -i flask`
+- Ricarica l'app dal pulsante verde
+
+### Database non funziona
+- Assicurati che il file gestione_chiavi.db abbia i permessi corretti
+- Il database verrà creato automaticamente al primo accesso
+
+---
+
+## 📱 ACCOUNT GRATUITO - LIMITI
+
+- ✅ Accessibile 24/7 da Internet
+- ✅ HTTPS automatico
+- ⚠️ Si "dorme" dopo inattività (si risveglia al primo accesso)
+- ⚠️ Fino a 512MB di storage
+- ⚠️ 100 secondi CPU/giorno (sufficiente per uso normale)
+
+Per rimuovere i limiti, considera l'upgrade a account a pagamento ($5/mese).
+
+---
+
+## 🔄 AGGIORNARE L'APP
+
+Per aggiornare l'app in futuro:
+1. Carica i nuovi file su PythonAnywhere (via Files o console)
+2. Click "Reload" nella pagina Web
+
+---
+
+Serve aiuto? Scrivi nel forum PythonAnywhere o chiedi qui!
